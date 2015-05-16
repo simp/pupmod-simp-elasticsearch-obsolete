@@ -1,0 +1,39 @@
+# This file managed by Puppet
+
+Listen <%= @listen %>
+
+# Doing this to keep out of the way of other Apache configurations.
+<VirtualHost *:<%= @listen %>>
+
+  SSLEngine on
+
+  SSLProtocol <%= @ssl_protocols.join(' ') %>
+  SSLCipherSuite <%= @ssl_cipher_suite.join(':') %>
+  SSLCertificateFile <%= @ssl_certificate_file %>
+  SSLCertificateKeyFile <%= @ssl_certificate_key_file %>
+  SSLCACertificatePath <%= @ssl_ca_certificate_path %>
+
+  SSLVerifyClient <%= @ssl_verify_client %>
+  SSLVerifyDepth <%= @ssl_verify_depth %>
+
+  <Proxy balancer://main>
+    BalancerMember http://127.0.0.1:9199 max=1 retry=5
+
+    <IfVersion < 2.4>
+    include '<%= @es_httpd_includes %>/auth/*.conf'
+    </IfVersion>
+    <IfVersion >= 2.4>
+    IncludeOptional '<%= @es_httpd_includes %>/auth/*.conf'
+    </IfVersion>
+
+    # Restrict who can write to ES.
+    include '<%= @es_httpd_includes %>/limit/*.conf'
+
+    <LimitExcept GET POST PUT DELETE>
+      Order allow,deny
+    </LimitExcept>
+  </Proxy>
+
+  ProxyPass / balancer://main/
+  ProxyPassReverse / balancer://main/
+</VirtualHost>
