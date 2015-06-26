@@ -1,0 +1,4 @@
+---
+fixtures:
+  symlinks:
+    elasticsearch: "#{source_dir}"

@@ -220,9 +220,9 @@ class elasticsearch::simp (
   }
 
   file { '/etc/cron.daily/elasticsearch_log_purge':
-    owner => 'root',
-    group => 'root',
-    mode => '700',
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0700',
     content => "#!/bin/sh
 if [ -d /var/log/elasticsearch ]; then
   /bin/find /var/log/elasticsearch -type f -mtime +${max_log_days} -exec /bin/rm {} \\;
@@ -232,10 +232,10 @@ fi
 
   # Correct the permissions on the ES templates directory
   file { '/etc/elasticsearch/templates_import':
-    ensure  => directory,
-    owner   => 'root',
-    group   => 'root',
-    mode    => '0644',
+    ensure => directory,
+    owner  => 'root',
+    group  => 'root',
+    mode   => '0644',
   }
 
   file { $l_config['path']['data']:
@@ -247,17 +247,17 @@ fi
 
   # This is here due to some weird bug in ES that won't read /etc properly.
   file { '/usr/share/elasticsearch/config':
-    ensure  => 'symlink',
-    target  => '/etc/elasticsearch',
-    force   => true
+    ensure => 'symlink',
+    target => '/etc/elasticsearch',
+    force  => true
   }
 
   if $use_iptables {
     iptables_rule { 'elasticsearch_allow_cluster':
-      first     => true,
-      content   => es_iptables_format($l_config['discovery']['zen']['ping']['unicast']['hosts']),
-      require   => Package['elasticsearch'],
-      notify    => Service['elasticsearch']
+      first   => true,
+      content => es_iptables_format($l_config['discovery']['zen']['ping']['unicast']['hosts']),
+      require => Package['elasticsearch'],
+      notify  => Service['elasticsearch']
     }
   }
   else {
@@ -272,15 +272,15 @@ fi
   # Manage both apache and the config.
   if $manage_httpd {
     class { 'elasticsearch::simp::apache':
-      proxyport   => $l_config['http']['port'],
-      method_acl  => $http_method_acl
+      proxyport  => $l_config['http']['port'],
+      method_acl => $http_method_acl
     }
   }
   elsif $manage_httpd == 'conf' {
     class { 'elasticsearch::simp::apache':
-      manage_httpd  => false,
-      proxyport     => $l_config['http']['port'],
-      method_acl    => $http_method_acl
+      manage_httpd => false,
+      proxyport    => $l_config['http']['port'],
+      method_acl   => $http_method_acl
     }
   }
   # Otherwise, don't manage apache or the config.

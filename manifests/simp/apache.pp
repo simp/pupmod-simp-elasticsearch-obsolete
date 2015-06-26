@@ -155,10 +155,10 @@ class elasticsearch::simp::apache (
       "${es_httpd_includes}/auth",
       "${es_httpd_includes}/limit",
     ]:
-      ensure  => 'directory',
-      owner   => 'root',
-      group   => 'apache',
-      mode    => '0640'
+      ensure => 'directory',
+      owner  => 'root',
+      group  => 'apache',
+      mode   => '0640'
     }
 
     $l_apache_auth = apache_auth($l_method_acl['method'])
