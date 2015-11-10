@@ -1,7 +1,7 @@
 Summary: ElasticSearch SIMP Puppet Module
 Name: pupmod-simp-elasticsearch
 Version: 2.0.0
-Release: 0
+Release: 1
 License: Apache License, Version 2.0
 Group: Applications/System
 Source: %{name}-%{version}-%{release}.tar.gz
@@ -10,6 +10,7 @@ Requires: hiera >= 1.2.1
 Requires: pupmod-electrical-elasticsearch >= 0.1.2-3
 Requires: pupmod-apache >= 4.0-13
 Requires: pupmod-common >= 4.1.0-5
+Requires: pupmod-simplib >= 1.0.0-0
 Requires: pupmod-iptables >= 4.0.0-0
 Requires: puppet >= 3.0.0
 Buildarch: noarch
@@ -58,6 +59,9 @@ done
 # Post uninstall stuff
 
 %changelog
+* Mon Nov 09 2015 Chris Tessmer <chris.tessmer@onypoint.com> - 2.0.0-1
+- migration to simplib and simpcat (lib/ only)
+
 * Tue Feb 24 2015 Trevor Vaughan <tvaughan@onyxpoint.com> - 2.0.0-0
 - Updated to move into the new default 'simp' environment.
 
